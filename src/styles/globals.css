@@ -7,6 +7,10 @@
   height: 100%;
   width: 100%;
   z-index: 1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  @apply rounded-xl overflow-hidden;
+  background-color: #1a1f35 !important;
 }
 
 /* Fix for marker shadows in Leaflet */
@@ -21,7 +25,61 @@
 
 /* Apply some minimal global styles */
 body {
-  @apply bg-gray-100 min-h-screen;
+  @apply bg-gradient-to-br from-blue-900 to-indigo-900 min-h-screen text-white;
+  background-attachment: fixed;
+}
+
+/* Glossy card effect */
+.glossy-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-effect);
+  -webkit-backdrop-filter: var(--glass-effect);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.glossy-card:hover {
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Selected card effect */
+.glossy-card.selected {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+}
+
+/* Enhanced input styles */
+.input-glow {
+  box-shadow: var(--input-glow);
+}
+
+.input-glow:focus {
+  box-shadow: var(--input-glow), 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Gradient text effects */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+}
+
+.gradient-text-primary {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #4f46e5, #8b5cf6);
+}
+
+.gradient-text-sunset {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #FF6B6B, #FFE66D);
+}
+
+.gradient-text-ocean {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #4ECDC4, #45B7D1);
 }
 
 /* Custom scrollbar */
@@ -31,15 +89,62 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  @apply bg-blue-900 bg-opacity-30;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded;
+  @apply bg-blue-500 bg-opacity-50;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-blue-400 bg-opacity-70;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Glass button hover effect */
+.glass-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.6s;
+}
+
+.glass-button:hover::before {
+  left: 100%;
 }
 
 :root {
@@ -66,6 +171,35 @@ body {
   --color-primary-800: rgb(var(--tw-color-primary-800)); /* #075985 */
   --color-primary-900: rgb(var(--tw-color-primary-900)); /* #0c4a6e */
   /* #endregion  /**======== Primary Color =========== */
+
+  /* Glossy theme colors */
+  --primary-gradient: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.8));
+  --secondary-gradient: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.8));
+  --card-bg: rgba(255, 255, 255, 0.15);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --glass-effect: blur(10px);
+  --input-glow: 0 0 15px rgba(59, 130, 246, 0.3);
+
+  /* Theme colors */
+  --color-bg-primary: linear-gradient(135deg, #1a1f35 0%, #2c1d3a 100%);
+  --color-card-bg: rgba(255, 255, 255, 0.05);
+  --color-card-border: rgba(255, 255, 255, 0.1);
+  --color-card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+  --color-accent-primary: #4f46e5;
+  --color-accent-secondary: #8b5cf6;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  
+  /* Effects */
+  --glass-blur: blur(12px);
+  --card-highlight: linear-gradient(
+    225deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  --input-glow: 0 0 20px rgba(79, 70, 229, 0.4);
+  --hover-glow: 0 0 30px rgba(79, 70, 229, 0.6);
 }
 
 @layer base {
@@ -155,4 +289,242 @@ body {
   .animated-underline:focus-visible {
     background-size: 0 2px, 100% 2px;
   }
+}
+
+/* Base styles */
+body {
+  background: var(--color-bg-primary);
+  background-attachment: fixed;
+  @apply min-h-screen text-white font-sans antialiased;
+}
+
+/* Glossy card effect */
+.glossy-card {
+  background: var(--color-card-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--color-card-shadow);
+  position: relative;
+  overflow: hidden;
+  @apply rounded-2xl;
+}
+
+.glossy-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-highlight);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glossy-card:hover::before {
+  opacity: 1;
+}
+
+/* Selected card effect */
+.glossy-card.selected {
+  background: rgba(79, 70, 229, 0.1);
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  box-shadow: var(--hover-glow);
+}
+
+/* Enhanced input styles */
+.modern-input {
+  @apply relative w-full;
+}
+
+.modern-input input {
+  @apply w-full px-6 py-4 bg-transparent border rounded-xl text-white placeholder-blue-200/60;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: var(--glass-blur);
+  border-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.modern-input input:focus {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--color-accent-primary);
+  box-shadow: var(--input-glow);
+  @apply outline-none;
+}
+
+.modern-input.with-icon input {
+  @apply pl-12;
+}
+
+.modern-input .icon {
+  @apply absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-300/70;
+}
+
+/* Button styles */
+.glass-button {
+  @apply relative overflow-hidden rounded-xl px-6 py-3 text-white font-medium;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 70, 229, 0.2) 0%,
+    rgba(139, 92, 246, 0.2) 100%
+  );
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(79, 70, 229, 0.3) 0%,
+    rgba(139, 92, 246, 0.3) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--hover-glow);
+  transform: translateY(-1px);
+}
+
+.glass-button:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: var(--input-glow); }
+  50% { box-shadow: var(--hover-glow); }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(79, 70, 229, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.7);
+}
+
+/* Map Styles */
+.leaflet-container {
+  @apply rounded-xl overflow-hidden;
+  background-color: #1a1f35 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply bg-white/90 backdrop-blur-md border border-white/20 shadow-lg;
+  border-radius: 0.75rem !important;
+}
+
+.leaflet-popup-tip {
+  @apply bg-white/90;
+}
+
+.leaflet-control-zoom {
+  @apply hidden;
+}
+
+.leaflet-control-attribution {
+  @apply bg-transparent text-white/50 !important;
+}
+
+.leaflet-control-attribution a {
+  @apply text-blue-300/70 hover:text-blue-300;
+}
+
+/* Custom popup styles */
+.custom-popup .leaflet-popup-content {
+  @apply m-2 p-1;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+  @apply bg-white/95 backdrop-blur-md;
+}
+
+.custom-popup .leaflet-popup-tip {
+  @apply bg-white/95;
+}
+
+/* Weather icons container */
+.weather-icon-container {
+  @apply rounded-full p-2;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: var(--glass-blur);
+}
+
+/* React-Select custom styling */
+.city-select-container {
+  @apply w-full py-3 px-4 pl-12 pr-10 rounded-xl bg-white/5 backdrop-blur-md;
+}
+
+.city-select__control {
+  @apply border-0 shadow-none bg-transparent;
+}
+
+.city-select__input {
+  @apply text-white;
+}
+
+.city-select__input:focus {
+  @apply shadow-none;
+}
+
+.city-select__placeholder {
+  @apply text-blue-200/50;
+}
+
+.city-select__single-value {
+  @apply text-white;
+}
+
+.city-select__menu {
+  @apply bg-gray-800/95 backdrop-blur-md rounded-xl border border-blue-500/30 shadow-xl overflow-hidden z-50;
+}
+
+.city-select__option {
+  @apply hover:bg-blue-500/30 cursor-pointer;
+}
+
+.city-select__option--is-focused {
+  @apply bg-blue-500/30;
+}
+
+.city-select__indicator-separator {
+  @apply hidden;
+}
+
+.city-select__dropdown-indicator {
+  @apply hidden;
+}
+
+.city-select__clear-indicator {
+  @apply text-blue-200/50 hover:text-white transition-colors duration-200;
+}
+
+/* Remove focus outline from React-Select input */
+.city-select__input input:focus {
+  @apply outline-none shadow-none;
+  box-shadow: none !important;
 }

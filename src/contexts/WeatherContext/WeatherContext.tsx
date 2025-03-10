@@ -1,26 +1,19 @@
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import useLocalStorage from './useLocalStorage';
+import { useLocalStorage } from '@/hooks';
+
+import { WeatherContextProps, WeatherProviderProps } from './types';
 
 import { City } from '@/types/weather';
 
-interface WeatherContextProps {
-  cities: City[];
-  addCity: (cityName: string, lat: number, lon: number) => void;
-  removeCity: (cityId: string) => void;
-  reorderCities: (startIndex: number, endIndex: number) => void;
-  getNextOrder: () => number;
-  selectedCity: string | null;
-  setSelectedCity: (cityId: string | null) => void;
-}
-
+// Create the context with undefined as default value
 const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
 
-interface WeatherProviderProps {
-  children: ReactNode;
-}
-
+/**
+ * Weather Provider component
+ * Manages the state of cities and selected city
+ */
 export function WeatherProvider({ children }: WeatherProviderProps) {
   const [cities, setCities] = useLocalStorage<City[]>('weatherDashboard-cities', []);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -35,7 +28,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   const addCity = useCallback((cityName: string, lat: number, lon: number) => {
     // Check if city already exists
     const cityExists = cities.some(
-      city => city.name.toLowerCase() === cityName.toLowerCase()
+      (city: City) => city.name.toLowerCase() === cityName.toLowerCase()
     );
 
     if (cityExists) {
@@ -60,7 +53,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
   }, [cities, getNextOrder, selectedCity, setCities]);
 
   const removeCity = useCallback((cityId: string) => {
-    const updatedCities = cities.filter(city => city.id !== cityId);
+    const updatedCities = cities.filter((city: City) => city.id !== cityId);
     setCities(updatedCities);
 
     // Update selected city if it was removed
@@ -75,7 +68,7 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
     result.splice(endIndex, 0, removed);
 
     // Update order values
-    const reordered = result.map((city, index) => ({
+    const reordered = result.map((city: City, index: number) => ({
       ...city,
       order: index,
     }));
@@ -102,24 +95,30 @@ export function WeatherProvider({ children }: WeatherProviderProps) {
     return () => clearTimeout(timer);
   }, [cities, selectedCity, addCity, isInitialized]);
 
+  // Create the context value object
+  const contextValue: WeatherContextProps = {
+    cities,
+    addCity,
+    removeCity,
+    reorderCities,
+    getNextOrder,
+    selectedCity,
+    setSelectedCity,
+  };
+
   return (
-    <WeatherContext.Provider
-      value={{
-        cities,
-        addCity,
-        removeCity,
-        reorderCities,
-        getNextOrder,
-        selectedCity,
-        setSelectedCity,
-      }}
-    >
+    <WeatherContext.Provider value={contextValue}>
       {children}
     </WeatherContext.Provider>
   );
 }
 
-export function useWeather() {
+/**
+ * Custom hook to use the Weather context
+ * @returns The Weather context
+ * @throws Error if used outside of a WeatherProvider
+ */
+export function useWeather(): WeatherContextProps {
   const context = useContext(WeatherContext);
   if (context === undefined) {
     throw new Error('useWeather must be used within a WeatherProvider');

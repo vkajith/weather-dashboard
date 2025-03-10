@@ -123,90 +123,79 @@ Check out the [expansion pack repository](https://github.com/theodorusclarence/e
 
 # Weather Dashboard
 
-A React-based Weather Dashboard application that allows users to monitor weather conditions for multiple cities.
+A modern weather dashboard application built with Next.js, TypeScript, and Tailwind CSS.
 
 ## Features
 
-- **Multiple City Monitoring**: Add and remove up to 5 cities to track simultaneously.
-- **Current Weather**: View current temperature, humidity, wind speed, and weather conditions.
-- **5-Day Forecast**: See the weather forecast for the next 5 days with min/max temperatures.
-- **Drag and Drop**: Rearrange cities with intuitive drag and drop functionality.
-- **Local Storage**: City selections are remembered across sessions.
-- **Interactive Map**: View selected cities on an integrated map.
-- **Responsive Design**: Works on desktop and mobile devices.
+- Current weather conditions for multiple cities
+- 5-day weather forecast
+- Interactive map view
+- City search with autocomplete
+- Responsive design for all devices
+- Dark mode support
 
-## Tech Stack
+## Project Structure
 
-- **Next.js / React**: Frontend framework
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling
-- **SWR**: Data fetching with caching
-- **Zod**: Schema validation
-- **React-DnD**: Drag and drop functionality
-- **Leaflet**: Interactive maps
+```
+src/
+├── components/        # UI components
+│   ├── ui/            # Reusable UI components
+│   ├── layout/        # Layout components
+│   └── weather/       # Weather-specific components
+├── constant/          # Constants and configuration
+│   ├── api.ts         # API endpoints and URLs
+│   └── env.ts         # Environment variables
+├── contexts/          # React contexts
+├── hooks/             # Custom React hooks
+├── lib/               # Utility functions
+│   └── api/           # API service modules
+├── pages/             # Next.js pages
+├── styles/            # Global styles
+└── types/             # TypeScript type definitions
+```
 
-## Setup & Installation
+## API Services
 
-### Prerequisites
+The application uses the OpenWeatherMap API for weather data:
 
-- Node.js 14.x or higher
-- npm or yarn
+- `weatherService.ts` - Services for fetching current weather and forecast data
+- `geoService.ts` - Services for geocoding (converting city names to coordinates)
+- `utils.ts` - Utility functions for API requests (retry logic, etc.)
 
-### Installation Steps
+## Environment Variables
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/weather-dashboard.git
-   cd weather-dashboard
-   ```
+Create a `.env.local` file with the following variables:
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+```
+NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+NEXT_PUBLIC_SHOW_LOGGER=true
+```
 
-3. **Configure API key**
-   - Sign up for a free API key at [OpenWeatherMap](https://openweathermap.org/api)
-   - Create a `.env.local` file in the root directory
-   - Add your API key to the file:
-     ```
-     NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
-     ```
+## Getting Started
 
-4. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+1. Clone the repository
+2. Install dependencies: `npm install` or `yarn install`
+3. Create `.env.local` file with required environment variables
+4. Run the development server: `npm run dev` or `yarn dev`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-5. **Open the application**
-   Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+## Building for Production
 
-## Deployment
+```
+npm run build
+npm run start
+```
 
-The application can be deployed to Vercel, Netlify, or AWS Amplify:
+or
 
-### Deploy to Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fweather-dashboard)
-
-1. Connect your GitHub repository to Vercel
-2. Add your OpenWeatherMap API key as an environment variable named `NEXT_PUBLIC_OPENWEATHER_API_KEY`
-3. Deploy the application
-
-## Error Handling
-
-The application implements robust error handling including:
-- Invalid city name validation
-- API request failures with user-friendly messages
-- Rate limit handling with exponential backoff retry logic
+```
+yarn build
+yarn start
+```
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
 
 ## Credits
 

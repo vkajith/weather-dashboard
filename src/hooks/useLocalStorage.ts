@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
 
+/**
+ * Custom hook for using localStorage with React state
+ * @param key The localStorage key
+ * @param initialValue The initial value if no value is found in localStorage
+ * @returns A stateful value and a function to update it
+ */
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
   // State to store our value - start with initialValue for server rendering
   const [storedValue, setStoredValue] = useState<T>(initialValue);
