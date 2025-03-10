@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { z } from 'zod';
 
@@ -26,12 +26,15 @@ const CustomOption = ({ innerProps, data, isFocused }: any) => (
     {...innerProps}
     className={`flex items-center px-4 py-3 cursor-pointer ${isFocused ? 'bg-blue-500/30' : ''} hover:bg-blue-500/30 transition-colors duration-150 border-b border-blue-500/10 last:border-b-0`}
   >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-300 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
+    <div className="relative mr-3 flex-shrink-0">
+      <div className="absolute inset-0 bg-blue-500/30 rounded-full blur-sm"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-300 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    </div>
     <div>
-      <span className="font-medium">{data.label}</span>
+      <span className="font-medium text-blue-100">{data.label}</span>
       <span className="text-blue-200/80 text-sm ml-2">
         {data.location}
       </span>
@@ -45,8 +48,18 @@ const CustomOption = ({ innerProps, data, isFocused }: any) => (
 const CitySelector: React.FC = () => {
   const { addCity } = useWeather();
   const [error, setError] = useState<string | null>(null);
-  const selectRef = useRef<any>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const selectRef = useRef<any>(null);
+  const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);
+
+  // Set up portal target on mount (client-side only)
+  useEffect(() => {
+    setMounted(true);
+    if (typeof document !== 'undefined') {
+      setMenuPortalTarget(document.body);
+    }
+  }, []);
 
   // Load options function for AsyncSelect
   const loadOptions = useCallback(async (inputValue: string) => {
@@ -82,12 +95,15 @@ const CitySelector: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className={`relative rounded-xl bg-white/5 backdrop-blur-md border-2 transition-all duration-300 ${isFocused ? 'border-blue-400/50' : 'border-transparent'}`}>
-        {/* Search icon */}
+      <div className={`relative rounded-xl bg-white/5 backdrop-blur-md border-2 transition-all duration-300 ${isFocused ? 'border-blue-400/50 shadow-lg shadow-blue-500/20' : 'border-transparent'}`}>
+        {/* Search icon with glow effect */}
         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-          </svg>
+          <div className="relative">
+            <div className={`absolute inset-0 bg-blue-500/30 rounded-full blur-md transition-opacity duration-300 ${isFocused ? 'opacity-100' : 'opacity-0'}`}></div>
+            <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 transition-colors duration-300 ${isFocused ? 'text-blue-300' : 'text-blue-400/70'}`} viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+            </svg>
+          </div>
         </div>
 
         <AsyncSelect<CityOption>
@@ -116,7 +132,7 @@ const CitySelector: React.FC = () => {
           classNamePrefix="city-select"
           isClearable
           isSearchable
-          menuPortalTarget={document.body}
+          menuPortalTarget={menuPortalTarget}
           menuPosition="fixed"
           styles={{
             control: (base) => ({
@@ -156,7 +172,7 @@ const CitySelector: React.FC = () => {
               backdropFilter: 'blur(10px)',
               borderRadius: '0.75rem',
               border: '1px solid rgba(96, 165, 250, 0.3)',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
               overflow: 'hidden',
               zIndex: 9999,
               marginTop: '8px'
@@ -199,13 +215,16 @@ const CitySelector: React.FC = () => {
         />
       </div>
 
-      {/* Error message */}
+      {/* Error message with enhanced styling */}
       {error && (
         <div className="mt-2 text-red-300 text-sm flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-          {error}
+          <div className="relative mr-2 flex-shrink-0">
+            <div className="absolute inset-0 bg-red-500/30 rounded-full blur-sm"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-300 relative z-10" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <span className="text-red-300">{error}</span>
         </div>
       )}
     </div>

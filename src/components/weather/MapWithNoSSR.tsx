@@ -48,8 +48,11 @@ const MapWithNoSSR = ({ city }: MapWithNoSSRProps) => {
 
   if (!mapReady) {
     return (
-      <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-        <p>Loading map...</p>
+      <div className="h-64 bg-gradient-to-br from-blue-900/50 to-indigo-900/50 backdrop-blur-md rounded-lg flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-300 mb-2"></div>
+          <p className="text-blue-300">Loading map...</p>
+        </div>
       </div>
     );
   }
@@ -58,19 +61,29 @@ const MapWithNoSSR = ({ city }: MapWithNoSSRProps) => {
   const blueIcon = new L.Icon({
     iconUrl: MAP_MARKERS.BLUE_ICON,
     shadowUrl: MAP_MARKERS.SHADOW,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
+    iconSize: [30, 45], // Slightly larger for better visibility
+    iconAnchor: [15, 45],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
 
+  // Custom popup style
+  const customPopup = L.popup({
+    className: 'custom-popup',
+    closeButton: true,
+    autoClose: true,
+    closeOnEscapeKey: true,
+  });
+
   return (
-    <div className="h-64 rounded-lg overflow-hidden">
+    <div className="h-64 rounded-lg overflow-hidden relative group">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10"></div>
       <MapContainer
         center={center}
         zoom={10}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={false}
+        className="z-0"
       >
         <ChangeView center={center} />
         <TileLayer
@@ -78,7 +91,14 @@ const MapWithNoSSR = ({ city }: MapWithNoSSRProps) => {
           url={MAP_TILES.DARK}
         />
         <Marker position={center} icon={blueIcon}>
-          <Popup>{cityName}</Popup>
+          <Popup className="custom-popup">
+            <div className="font-medium text-center">
+              <span className="text-blue-600">{cityName}</span>
+              <div className="text-xs text-gray-500 mt-1">
+                {city.lat.toFixed(4)}, {city.lon.toFixed(4)}
+              </div>
+            </div>
+          </Popup>
         </Marker>
       </MapContainer>
     </div>

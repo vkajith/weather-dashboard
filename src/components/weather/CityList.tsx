@@ -110,14 +110,26 @@ const CityItem: React.FC<CityItemProps> = ({
       ref={ref}
       style={{ opacity }}
       data-handler-id={handlerId}
-      className="mb-4 cursor-move"
+      className={`mb-6 cursor-move transition-all duration-200 ${isDragging ? 'scale-105 rotate-1' : ''}`}
     >
-      <WeatherCard
-        city={name}
-        onRemove={onRemove}
-        isSelected={isSelected}
-        onClick={onSelect}
-      />
+      <div className={`relative ${isDragging ? 'z-50' : 'z-10'}`}>
+        {isDragging && <div className="absolute inset-0 bg-blue-500/20 rounded-lg blur-md -m-1"></div>}
+        <div className="relative">
+          <WeatherCard
+            city={name}
+            onRemove={onRemove}
+            isSelected={isSelected}
+            onClick={onSelect}
+          />
+          {!isDragging && (
+            <div className="absolute -right-1 -top-1 w-6 h-6 bg-blue-500/30 rounded-full flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -138,29 +150,40 @@ const CityList: React.FC = () => {
   if (!mounted) {
     return (
       <Card title="Your Cities">
-        <div className="h-64 bg-white bg-opacity-5 rounded-lg"></div>
+        <div className="h-64 bg-white/5 rounded-lg"></div>
       </Card>
     );
   }
 
   return (
     <Card title="Your Cities">
-      <div className="space-y-3">
-        {cities.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="weather-icon-container p-4 mb-4 animate-float">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {cities.length === 0 ? (
+        <div className="text-center py-6">
+          <div className="relative inline-block mb-3">
+            <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-md"></div>
+            <div className="weather-icon-container p-3 animate-float relative z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-white">No Cities Added</h3>
-            <p className="text-blue-200/80">
-              Search and add cities using the search box above
-            </p>
           </div>
-        ) : (
-          <DndProvider backend={HTML5Backend}>
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+          <h3 className="text-lg font-semibold mb-1 gradient-text">No Cities Added</h3>
+          <p className="text-blue-200/80 text-sm">
+            Search and add cities using the search box
+          </p>
+        </div>
+      ) : (
+        <DndProvider backend={HTML5Backend}>
+          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 py-2">
+            {cities.length > 1 && (
+              <p className="text-blue-300/80 text-xs mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                </svg>
+                Drag to reorder cities
+              </p>
+            )}
+            <div className="space-y-6">
               {cities
                 .sort((a, b) => a.order - b.order)
                 .map((city, index) => (
@@ -176,9 +199,9 @@ const CityList: React.FC = () => {
                   />
                 ))}
             </div>
-          </DndProvider>
-        )}
-      </div>
+          </div>
+        </DndProvider>
+      )}
     </Card>
   );
 };
