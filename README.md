@@ -33,6 +33,8 @@ weather-dashboard/
 │   ├── components/          # React components
 │   │   ├── ui/              # Reusable UI components
 │   │   └── weather/         # Weather-specific components
+│   │   └── ui/              # UI-related utilities
+│   │   └── weather/         # Weather-related utilities
 │   ├── contexts/            # React context providers
 │   │   └── WeatherContext/  # Weather state management
 │   ├── lib/                 # Library code
@@ -41,9 +43,7 @@ weather-dashboard/
 │   ├── styles/              # Global styles
 │   ├── types/               # TypeScript type definitions
 │   └── utils/               # Utility functions
-│       ├── ui/              # UI-related utilities
-│       └── weather/         # Weather-related utilities
-├── .env.local               # Environment variables (create this file)
+└── .env.local               # Environment variables (create this file)
 ├── next.config.js           # Next.js configuration
 ├── package.json             # Project dependencies
 ├── tailwind.config.js       # Tailwind CSS configuration
@@ -75,6 +75,7 @@ weather-dashboard/
 3. Create a `.env.local` file in the root directory with your OpenWeatherMap API key:
    ```
    NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+   SITE_URL=http://localhost:3000
    ```
 
 4. Start the development server:
@@ -209,3 +210,23 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
 - Map tiles by [OpenStreetMap](https://www.openstreetmap.org/)
 - Icons and design inspiration from various sources
+
+## Environment Variables
+
+Before running the application, you need to set up the following environment variables in your `.env.local` file:
+
+### Required Variables
+- `NEXT_PUBLIC_OPENWEATHER_API_KEY`: Your OpenWeatherMap API key (get it from [OpenWeatherMap](https://openweathermap.org/api))
+- `SITE_URL`: Your application URL (use `http://localhost:3000` for development)
+
+### Optional Variables
+- `NEXT_PUBLIC_MAP_API_KEY`: If you're using premium map services
+
+You can copy the `.env.example` file and rename it to `.env.local` to get started:
+```bash
+cp .env.example .env.local
+```
+
+Then edit `.env.local` and add your API keys.
+
+> **Important**: Never commit your `.env.local` file or expose your API keys in the code.

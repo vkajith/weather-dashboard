@@ -18,8 +18,8 @@ export const OPENWEATHER_ICON_URL = 'https://openweathermap.org/img/wn';
 
 // Map Tile URLs
 export const MAP_TILES = {
-  DARK: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',
-  ATTRIBUTION: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  DARK: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?api_key=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`,
+  ATTRIBUTION: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 };
 
 // Map Marker Icons

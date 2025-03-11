@@ -84,6 +84,7 @@ const MapWithNoSSR = ({ city }: MapWithNoSSRProps) => {
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={false}
         className="z-0"
+        attributionControl={false}
       >
         <ChangeView center={center} />
         <TileLayer

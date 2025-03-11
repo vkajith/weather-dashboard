@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-import { API_CONFIG, ENDPOINTS, OPENWEATHER_BASE_URL } from '@/constant/api';
-import { OPENWEATHER_API_KEY } from '@/constant/env';
+import { retryWithBackoff } from '@/lib/api/utils';
 
-import { retryWithBackoff } from './utils';
+import { API_CONFIG, ENDPOINTS, OPENWEATHER_BASE_URL } from '@/constant/api';
 
 import { ForecastData, WeatherData } from '@/types/weather';
 
@@ -19,7 +18,7 @@ export const fetchWeatherData = async (city: string): Promise<WeatherData> => {
       const response = await api.get(ENDPOINTS.CURRENT_WEATHER, {
         params: {
           q: city,
-          appid: OPENWEATHER_API_KEY,
+          appid: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || '',
           units: API_CONFIG.DEFAULT_UNITS,
         },
       });
@@ -51,7 +50,7 @@ export const fetchForecastData = async (city: string): Promise<ForecastData> => 
       const response = await api.get(ENDPOINTS.FORECAST, {
         params: {
           q: city,
-          appid: OPENWEATHER_API_KEY,
+          appid: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || '',
           units: API_CONFIG.DEFAULT_UNITS,
         },
       });

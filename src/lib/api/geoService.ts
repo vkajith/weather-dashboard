@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-import { ENDPOINTS, OPENWEATHER_GEO_URL } from '@/constant/api';
-import { OPENWEATHER_API_KEY } from '@/constant/env';
+import { retryWithBackoff } from '@/lib/api/utils';
 
-import { retryWithBackoff } from './utils';
+import { ENDPOINTS, OPENWEATHER_GEO_URL } from '@/constant/api';
 
 /**
  * Fetch coordinates for a city by name
@@ -17,7 +16,7 @@ export const fetchCityCoordinates = async (cityName: string): Promise<{ lat: num
         params: {
           q: cityName,
           limit: 1,
-          appid: OPENWEATHER_API_KEY,
+          appid: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || '',
         },
       });
 
@@ -60,7 +59,7 @@ export const fetchCitySuggestions = async (query: string, limit = 5): Promise<Ci
         params: {
           q: query,
           limit,
-          appid: OPENWEATHER_API_KEY,
+          appid: process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY || '',
         },
       });
 
